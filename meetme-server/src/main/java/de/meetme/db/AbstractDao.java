@@ -21,17 +21,21 @@ abstract public class AbstractDao<T extends PersistentObject> extends AbstractDA
 
     @Override
     public T get(Serializable id) {
-        log.debug("Get " + id);
-        String sqlQuery = "select * from " + getEntityClass().getSimpleName() + " where id = ?";
-        Query q = currentSession().createNativeQuery(sqlQuery, getEntityClass());
-        q.setParameter( 1, id );
-        List<T> result = q.getResultList();
-        if(result.isEmpty()) {
-            return null;
+        try {
+            log.debug("Get " + id);
+            String sqlQuery = "select * from " + getEntityClass().getSimpleName() + " where id = ?";
+            Query q = currentSession().createNativeQuery(sqlQuery, getEntityClass());
+            q.setParameter(1, id);
+            List<T> result = q.getResultList();
+            if (result.isEmpty()) {
+                return null;
+            }
+            return (T) q.getResultList().get(0);
+        } catch (Exeption e) {
+            log.error("Something bad:" + e.toString(), e);
+            throw e;
         }
-        return (T)q.getResultList().get(0);
     }
-
     @Override
     public T persist(T entity) throws HibernateException {
         return super.persist(entity);
