@@ -3,4 +3,5 @@ build
 .idea
 out
 .gradle
-local.properties
+*.properties
+
